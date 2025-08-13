@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greetings</title>
+  <style>
+    body {
+      font-variant-caps: all-petite-caps;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      background: #fafafa;
+    }
+    .widget {
+      padding: 16px;
+      color: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      width: min(640px, 95vw);
+      border: 3px solid #000000;
+      border-radius: 8px;
+      box-shadow: 2px 2px 1px 0px #000000;
+      background: #fff;
+      gap: 8px;
+    }
+    .greet { font-size: 3em; text-align: center; }
+    .date  { font-family: monospace; font-size: 1.5em; }
+    .clock { font-family: monospace; font-size: 2em; display: flex; align-items: baseline; gap: 6px; }
+    .time  { display: inline-block; min-width: 24px; text-align: center; }
+    .ampm  { font-size: 0.6em; opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="widget">
+      <div class="greet" id="greet"></div>
+      <div class="date" id="date"></div>
+      <div class="clock">
+        <div class="time" id="hour"></div>
+        <div>:</div>
+        <div class="time" id="min"></div>
+        <div>:</div>
+        <div class="time" id="sec"></div>
+        <div class="ampm" id="ampm"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function padZeros(num) {
+      return num < 10 ? "0" + num : String(num);
+    }
+    function twelveHour(hour) {
+      if (hour > 12) return hour - 12;
+      if (hour === 0) return 12;
+      return hour;
+    }
+
+    function displayGreetings(today) {
+      const hrs = today.getHours();
+      const name = "selcan";
+      let greet;
+      if (hrs < 12)       greet = "Good Morning "  + name;
+      else if (hrs < 18)  greet = "Good Afternoon " + name;
+      else                greet = "Good Evening "  + name;
+      document.getElementById("greet").textContent = greet;
+    }
+
+    function displayDate(today) {
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const monthNames = [
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
+      ];
+      const dayName = days[today.getDay()];
+      const monthName = monthNames[today.getMonth()];
+      const date = today.getDate();
+      const year = today.getFullYear();
+      document.getElementById("date").textContent = dayName + ", " + monthName + " " + date + " " + year;
+    }
+
+    function displayClock(today) {
+      const hour24 = today.getHours();
+      const hour12 = twelveHour(hour24);
+      const minutes = padZeros(today.getMinutes());
+      const seconds = padZeros(today.getSeconds());
+      const ampm = hour24 >= 12 ? "PM" : "AM";
+
+      document.getElementById("hour").textContent = padZeros(hour12);
+      document.getElementById("min").textContent = minutes;
+      document.getElementById("sec").textContent = seconds;
+      document.getElementById("ampm").textContent = ampm;
+    }
+
+    function displayWidget() {
+      const today = new Date();
+      displayGreetings(today);
+      displayDate(today);
+      displayClock(today);
+    }
+
+    // Initial call and periodic updates
+    displayWidget();
+    setInterval(displayWidget, 500);
+  </script>
+</body>
+</html>
